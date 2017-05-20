@@ -7,7 +7,6 @@ class ConvertToErrorExceptionTest extends \Codeception\TestCase\Test
     public function testFlow()
     {
         Convert::toErrorException(function () {
-            $this->assertTrue(true);
         });
         try {
             fopen();

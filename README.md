@@ -4,8 +4,8 @@ Provides temporary error handler automatically using [`set_error_handler()`] and
 
 | PHP | :question: | Feature Restriction |
 |:---:|:---:|:---:|
-| 5.3~ | :smile: | Supported |
-| ~5.2 | :boom: | Incompatible |
+| 5.3.2~ | :smile: | Supported |
+| ~5.3.1 | :boom: | Incompatible |
 
 ## Installing
 

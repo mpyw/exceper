@@ -37,7 +37,7 @@ class ConvertSilentTest extends \Codeception\TestCase\Test
     }
 
     /**
-     * @requires PHP >= 7
+     * @requires PHP 7.0.0
      */
     public function testFlowWithError()
     {

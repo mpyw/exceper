@@ -7,7 +7,6 @@ class ConvertWithInlineClassNameTest extends \Codeception\TestCase\Test
     public function testFlow()
     {
         Convert::toInvalidArgumentException(function () {
-            $this->assertTrue(true);
         });
         try {
             fopen();
@@ -39,7 +38,7 @@ class ConvertWithInlineClassNameTest extends \Codeception\TestCase\Test
     }
 
     /**
-     * @requires PHP >= 7
+     * @requires PHP 7.0.0
      */
     public function testFlowWithError()
     {

@@ -6,7 +6,7 @@ class ConvertTest extends \Codeception\TestCase\Test
 {
     public function testFlow()
     {
-        Convert::to(\InvalidArgumentException::class, function () {
+        Convert::to('\InvalidArgumentException', function () {
             $this->assertTrue(true);
         });
         try {
@@ -20,7 +20,7 @@ class ConvertTest extends \Codeception\TestCase\Test
     public function testFlowWithException()
     {
         try {
-            Convert::to(\InvalidArgumentException::class, function () use (&$line) {
+            Convert::to('\InvalidArgumentException', function () use (&$line) {
                 $line = __LINE__; fopen();
             });
         } catch (\InvalidArgumentException $x) {
@@ -41,7 +41,7 @@ class ConvertTest extends \Codeception\TestCase\Test
     public function testSuppressingErrors()
     {
         try {
-            Convert::to(\InvalidArgumentException::class, function () {
+            Convert::to('\InvalidArgumentException', function () {
                 @fopen();
             });
         } catch (\InvalidArgumentException $x) {
@@ -50,12 +50,12 @@ class ConvertTest extends \Codeception\TestCase\Test
     }
 
     /**
-     * @requires PHP >= 7
+     * @requires PHP 7.0.0
      */
     public function testFlowWithError()
     {
         try {
-            Convert::to(\ArithmeticError::class, function () use (&$line) {
+            Convert::to('\ArithmeticError', function () use (&$line) {
                 $line = __LINE__; fopen();
             });
         } catch (\ArithmeticError $x) {

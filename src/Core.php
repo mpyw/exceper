@@ -15,9 +15,9 @@ class Core
      * @return mixed
      * @throws \Exception|\Throwable
      */
-    public static function handle($callback, $handler, $types = E_ALL | E_STRICT)
+    public static function handle($callback, $handler, $types = null)
     {
-        set_error_handler($handler, $types);
+        set_error_handler($handler, $types === null ? \E_ALL | \E_STRICT : $types);
 
         try {
             $result = $callback();
