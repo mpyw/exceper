@@ -70,5 +70,22 @@ static mpyw\Exceper\Convert::to{$class}(callable $callback, int $types = E_ALL |
 
 Converted errors.
 
+### mpyw\Exceper\Convert::silent()
+
+Capture errors but never throw anything.
+
+```php
+static mpyw\Exceper\Convert::silent(callable $callback, int $types = E_ALL | E_STRICT): mixed
+```
+
+#### Arguments
+
+- **`(callable)`** __*$callback*__<br /> Callback function to be executed. This parameter SHOULD be used as `\Closure` because arguments cannot be specified.
+- **`(int)`** __*$types*__<br /> Bit mask of target error severities.
+
+#### Return Value
+
+**`(mixed)`**<br />Propagates upcoming value from `$callback()`. Returns `null` if something thrown.
+
 [`set_error_handler()`]: http://www.php.net/manual/function.set-error-handler.php
 [`restore_error_handler()`]: http://www.php.net/manual/function.restore-error-handler.php

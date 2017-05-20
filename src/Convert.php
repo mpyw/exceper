@@ -111,4 +111,31 @@ class Convert
             throw new \ErrorException($message, 0, $severity, $file, $line);
         }, (int)$types);
     }
+
+    /**
+     * @param callable $callback
+     * @param int $types
+     * @return mixed
+     */
+    public static function silent($callback, $types = E_ALL | E_STRICT)
+    {
+        if (!is_callable($callback)) {
+            throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 1 to be callable, ' . gettype($callback) . ' given');
+        }
+        if ($types !== null && !is_numeric($types)) {
+            throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 2 to be integer, ' . gettype($types) . ' given');
+        }
+
+        $e = new \Exception;
+        try {
+            return Core::handle($callback, function ($severity) use ($e) {
+                if (!(error_reporting() & $severity)) {
+                    return;
+                }
+                throw $e;
+            }, (int)$types);
+        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+        }
+    }
 }
