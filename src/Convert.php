@@ -70,7 +70,7 @@ class Convert
             throw new \BadMethodCallException('Call to undefined method ' . get_called_class() . "::$method()");
         }
 
-        $class = substr($method, 2);
+        $class = (string)substr($method, 2);
         $required = $class === '' ? 2 : 1;
         self::validateArgumentTypes($method, $args, $required);
 
