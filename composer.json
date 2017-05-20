@@ -1,0 +1,39 @@
+{
+    "name": "mpyw/exceper",
+    "description": "Provides temporary error handler automatically using set_error_handler() and restore_error_handler().",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "set_error_handler",
+        "restore_error_handler",
+        "error",
+        "temporary",
+        "ErrorException"
+    ],
+    "authors": [
+        {
+            "name": "mpyw",
+            "email": "ryosuke_i_628@yahoo.co.jp"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "codeception/codeception": "^2.2",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "mpyw\\Exceper\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "php vendor/bin/codecept run unit --coverage --coverage-xml"
+    },
+    "archive": {
+        "exclude": [
+            "*",
+            ".*",
+            "!/src/*"
+        ]
+    }
+}
