@@ -115,9 +115,10 @@ class Convert
     /**
      * @param callable $callback
      * @param int $types
+     * @param bool $captureExceptions
      * @return mixed
      */
-    public static function silent($callback, $types = null)
+    public static function silent($callback, $types = null, $captureExceptions = true)
     {
         if (!is_callable($callback)) {
             throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 1 to be callable, ' . gettype($callback) . ' given');
@@ -126,16 +127,19 @@ class Convert
             throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 2 to be integer, ' . gettype($types) . ' given');
         }
 
-        $e = new \Exception;
+        $dummyException = new \Exception;
         try {
-            return Core::handle($callback, function ($severity) use ($e) {
+            return Core::handle($callback, function ($severity) use ($dummyException) {
                 if (!(error_reporting() & $severity)) {
                     return;
                 }
-                throw $e;
+                throw $dummyException;
             }, (int)($types === null ? \E_ALL | \E_STRICT : $types));
         } catch (\Exception $e) {
         } catch (\Throwable $e) {
+        }
+        if (!$captureExceptions && $e !== $dummyException) {
+            throw $e;
         }
     }
 }

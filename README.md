@@ -75,13 +75,14 @@ Converted errors.
 Capture errors but never throw anything.
 
 ```php
-static mpyw\Exceper\Convert::silent(callable $callback, int $types = E_ALL | E_STRICT): mixed
+static mpyw\Exceper\Convert::silent(callable $callback, int $types = E_ALL | E_STRICT, bool $captureExceptions = true): mixed
 ```
 
 #### Arguments
 
 - **`(callable)`** __*$callback*__<br /> Callback function to be executed. This parameter SHOULD be used as `\Closure` because arguments cannot be specified.
 - **`(int)`** __*$types*__<br /> Bit mask of target error severities.
+- **`(bool)`** __*$captureExceptions*__<br /> Capture exceptions those were directly thrown; not originated in `set_error_handler()`.
 
 #### Return Value
 
