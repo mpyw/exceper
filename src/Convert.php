@@ -87,7 +87,7 @@ class Convert
                 return;
             }
             throw Core::rewriteLocation(new $class($message), $file, $line);
-        }, isset($args[1]) ? (int)$args[1] : E_ALL | E_STRICT);
+        }, isset($args[1]) ? (int)$args[1] : \E_ALL | \E_STRICT);
     }
 
     /**
