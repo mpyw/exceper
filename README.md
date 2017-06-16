@@ -49,7 +49,7 @@ try {
 Capture errors to convert into an instance of the specified class.  
 
 - Error handlers are automatically restored.
-- `->getFile()` and `->getLine()` returns correct locations.
+- **`->getFile()` and `->getLine()` returns correct locations** like `ErrorException` does.
 
 ```php
 static mpyw\Exceper\Convert::to(string $class, callable $callback, int $types = E_ALL | E_STRICT): mixed
