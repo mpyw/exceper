@@ -66,7 +66,7 @@ class Convert
      */
     public static function __callStatic($method, array $args)
     {
-        if (strtolower(substr($method, 0, 2)) !== 'to') {
+        if (strcasecmp(substr($method, 0, 2), 'to')) {
             throw new \BadMethodCallException('Call to undefined method ' . get_called_class() . "::$method()");
         }
 
