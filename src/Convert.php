@@ -152,18 +152,17 @@ class Convert
             throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 2 to be integer, ' . gettype($types) . ' given');
         }
 
-        $dummyException = new \Exception;
         try {
-            return Core::handle($callback, function ($severity) use ($dummyException) {
+            return Core::handle($callback, function ($severity, $message, $file, $line) use (&$errorException) {
                 if (!(error_reporting() & $severity)) {
                     return;
                 }
-                throw $dummyException;
+                throw $errorException = new \ErrorException($message, 0, $severity, $file, $line);
             }, (int)($types === null ? \E_ALL | \E_STRICT : $types));
         } catch (\Exception $e) {
         } catch (\Throwable $e) {
         }
-        if (!$captureExceptions && $e !== $dummyException) {
+        if (!$captureExceptions && $e !== $errorException) {
             throw $e;
         }
     }
