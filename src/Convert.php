@@ -86,7 +86,7 @@ class Convert
             if (!(error_reporting() & $severity)) {
                 return;
             }
-            if (strcasecmp($class, 'ErrorException')) {
+            if (strcasecmp($class, 'ErrorException') && strcasecmp($class, '\ErrorException')) {
                 throw Core::rewriteLocation(new $class($message), $file, $line);
             } else {
                 throw new \ErrorException($message, 0, $severity, $file, $line);
