@@ -86,30 +86,12 @@ class Convert
             if (!(error_reporting() & $severity)) {
                 return;
             }
-            throw Core::rewriteLocation(new $class($message), $file, $line);
-        }, isset($args[1]) ? (int)$args[1] : \E_ALL | \E_STRICT);
-    }
-
-    /**
-     * @param callable $callback
-     * @param int $types
-     * @return mixed
-     */
-    public static function toErrorException($callback, $types = null)
-    {
-        if (!is_callable($callback)) {
-            throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 1 to be callable, ' . gettype($callback) . ' given');
-        }
-        if ($types !== null && !is_numeric($types)) {
-            throw new \InvalidArgumentException(get_called_class() . '::' . __METHOD__ . '() expects parameter 2 to be integer, ' . gettype($types) . ' given');
-        }
-
-        return Core::handle($callback, function ($severity, $message, $file, $line) {
-            if (!(error_reporting() & $severity)) {
-                return;
+            if (strcasecmp($class, 'ErrorException')) {
+                throw Core::rewriteLocation(new $class($message), $file, $line);
+            } else {
+                throw new \ErrorException($message, 0, $severity, $file, $line);
             }
-            throw new \ErrorException($message, 0, $severity, $file, $line);
-        }, (int)($types === null ? \E_ALL | \E_STRICT : $types));
+        }, isset($args[1]) ? (int)$args[1] : \E_ALL | \E_STRICT);
     }
 
     /**
