@@ -2,11 +2,11 @@
 
 use mpyw\Exceper\Convert;
 
-class ConvertTest extends \Codeception\TestCase\Test
+class ConvertWithCodeTest extends \Codeception\TestCase\Test
 {
     public function testFlow()
     {
-        Convert::to('\InvalidArgumentException', function () {
+        Convert::to('\InvalidArgumentException', 114514, function () {
             $this->assertTrue(true);
         });
         try {
@@ -20,13 +20,13 @@ class ConvertTest extends \Codeception\TestCase\Test
     public function testFlowWithException()
     {
         try {
-            Convert::to('\InvalidArgumentException', function () use (&$line) {
+            Convert::to('\InvalidArgumentException', 114514, function () use (&$line) {
                 $line = __LINE__; fopen();
             });
         } catch (\InvalidArgumentException $x) {
         }
         $this->assertTrue(isset($x));
-        $this->assertEquals(0, $x->getCode());
+        $this->assertEquals(114514, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
         $this->assertEquals('fopen() expects at least 2 parameters, 0 given', $x->getMessage());
@@ -41,7 +41,7 @@ class ConvertTest extends \Codeception\TestCase\Test
     public function testSuppressingErrors()
     {
         try {
-            Convert::to('\InvalidArgumentException', function () {
+            Convert::to('\InvalidArgumentException', 114514, function () {
                 @fopen();
             });
         } catch (\InvalidArgumentException $x) {
@@ -55,13 +55,13 @@ class ConvertTest extends \Codeception\TestCase\Test
     public function testFlowWithError()
     {
         try {
-            Convert::to('\ArithmeticError', function () use (&$line) {
+            Convert::to('\ArithmeticError', 114514, function () use (&$line) {
                 $line = __LINE__; fopen();
             });
         } catch (\ArithmeticError $x) {
         }
         $this->assertTrue(isset($x));
-        $this->assertEquals(0, $x->getCode());
+        $this->assertEquals(114514, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
         $this->assertEquals('fopen() expects at least 2 parameters, 0 given', $x->getMessage());
@@ -74,39 +74,21 @@ class ConvertTest extends \Codeception\TestCase\Test
     }
 
     /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Call to undefined method mpyw\Exceper\Convert::dummy()
-     */
-    public function testInvalidMethodName()
-    {
-        Convert::dummy();
-    }
-
-    /**
      * @expectedException \DomainException
      * @expectedExceptionMessageRegExp / must be an instance of Exception or Throwable$/
      */
     public function testStringableInstanceAsClassName()
     {
-        Convert::to(new \InvalidArgumentException, function () {});
+        Convert::to(new \InvalidArgumentException, 114514, function () {});
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects at least 2 parameters, 0 given
-     */
-    public function testMissingTwoArguments()
-    {
-        Convert::to();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects at least 2 parameters, 1 given
+     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects parameter 3 to be callable, none given
      */
     public function testMissingOneArgument()
     {
-        Convert::to('dummy');
+        Convert::to('dummy', 114514);
     }
 
     /**
@@ -115,24 +97,24 @@ class ConvertTest extends \Codeception\TestCase\Test
      */
     public function testInvalidFirstArgumentType()
     {
-        Convert::to([], function () {});
+        Convert::to([], 114514, function () {});
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects parameter 2 to be callable or integer, string given
+     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects parameter 3 to be callable, NULL given
      */
-    public function testInvalidSecondArgumentType()
+    public function testInvalidThridArgumentType()
     {
-        Convert::to('dummy', 'dummy');
+        Convert::to('dummy', 114514, null);
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects parameter 3 to be integer, string given
+     * @expectedExceptionMessage mpyw\Exceper\Convert::to() expects parameter 4 to be integer, string given
      */
-    public function testInvalidThirdArgumentType()
+    public function testInvalidFourthArgumentType()
     {
-        Convert::to('dummy', function () {}, 'dummy');
+        Convert::to('dummy', 114514, function () {}, 'dummy');
     }
 }

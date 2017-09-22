@@ -54,11 +54,14 @@ Capture errors to convert into an instance of the specified class.
 ```php
 static mpyw\Exceper\Convert::to(string $class, callable $callback, int $types = E_ALL | E_STRICT): mixed
 static mpyw\Exceper\Convert::to{$class}(callable $callback, int $types = E_ALL | E_STRICT): mixed
+static mpyw\Exceper\Convert::to(string $class, int $code, callable $callback, int $types = E_ALL | E_STRICT): mixed
+static mpyw\Exceper\Convert::to{$class}(int $code, callable $callback, int $types = E_ALL | E_STRICT): mixed
 ```
 
 #### Arguments
 
 - **`(string)`** __*$class*__<br /> Conversion target class name **(case-sensitive)** which is an instance of `\Exception` or `\Throwable`.
+- **`(int)`** __*$code*__<br /> Error code passed to the constructor as the second argument. Default to `0`.
 - **`(callable)`** __*$callback*__<br /> Callback function to be executed. This parameter SHOULD be used as `\Closure` because arguments cannot be specified.
 - **`(int)`** __*$types*__<br /> Bit mask of target error severities.
 
