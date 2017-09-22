@@ -132,7 +132,7 @@ class Convert
             if (strcasecmp($class, 'ErrorException') && strcasecmp($class, '\ErrorException')) {
                 throw Core::rewriteLocation(new $class($message, $code ?: 0), $file, $line);
             } else {
-                throw new \ErrorException($message, 0, $severity, $file, $line);
+                throw new \ErrorException($message, $code ?: 0, $severity, $file, $line);
             }
         }, isset($args[1 + ($code !== null)]) ? (int)$args[1 + ($code !== null)] : \E_ALL | \E_STRICT);
     }
