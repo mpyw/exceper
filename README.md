@@ -24,7 +24,7 @@ use mpyw\Exceper\Convert;
 
 try {
 
-    // We pick errors triggerd by fopen() or fgets().
+    // We pick errors triggered by fopen() or fgets().
     // They are converted into \RuntimeException.
     Convert::toRuntimeException(function () {
         $fp = fopen('http://example.com', 'rb');
@@ -60,7 +60,7 @@ static mpyw\Exceper\Convert::to{$class}(int $code, callable $callback, int $type
 
 #### Arguments
 
-- **`(string)`** __*$class*__<br /> Conversion target class name **(case-sensitive)** which is an instance of `\Exception` or `\Throwable`.
+- **`(string)`** __*$class*__<br /> Conversion target class name which is an instance of `\Exception` or `\Throwable`. Please note that case-sensitivity of class name depends on the implementation of your autoloaders, which can cause an unexpected behavior if the target class is not loaded.
 - **`(int)`** __*$code*__<br /> Error code passed to the constructor as the second argument. Default to `0`.
 - **`(callable)`** __*$callback*__<br /> Callback function to be executed. This parameter SHOULD be used as `\Closure` because arguments cannot be specified.
 - **`(int)`** __*$types*__<br /> Bit mask of target error severities.
@@ -83,9 +83,9 @@ static mpyw\Exceper\Convert::silent(callable $callback, int $types = E_ALL | E_S
 
 #### Arguments
 
-- **`(callable)`** __*$callback*__<br /> Callback function to be executed. This parameter SHOULD be used as `\Closure` because arguments cannot be specified.
+- **`(callable)`** __*$callback*__<br /> Callback function to be executed. This parameter SHOULD be a `\Closure` because arguments cannot be specified.
 - **`(int)`** __*$types*__<br /> Bit mask of target error severities.
-- **`(bool)`** __*$captureExceptions*__<br /> Capture exceptions those were directly thrown; not originated in `set_error_handler()`.
+- **`(bool)`** __*$captureExceptions*__<br /> Capture exceptions that were directly thrown; not originated in `set_error_handler()`.
 
 #### Return Value
 
