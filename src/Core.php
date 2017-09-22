@@ -20,7 +20,7 @@ class Core
         set_error_handler($handler, $types === null ? \E_ALL | \E_STRICT : $types);
 
         try {
-            $result = $callback();
+            $result = call_user_func($callback);
             restore_error_handler();
             return $result;
         } catch (\Exception $e) {
