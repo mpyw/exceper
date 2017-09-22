@@ -70,8 +70,9 @@ class Convert
      * @param string $method
      * @param array $args
      * @param int $required
+     * @param int &$code
      */
-    protected static function validateArgumentTypes($method, array $args, $required)
+    protected static function validateArgumentTypes($method, array $args, $required, &$code = null)
     {
         $argc = count($args);
         if ($argc < $required) {
@@ -80,11 +81,18 @@ class Convert
         if ($required === 2 and !is_string($args[0]) and !is_object($args[0]) || !method_exists($args[0], '__toString')) {
             throw new \InvalidArgumentException(get_called_class() . "::$method() expects parameter 1 to be string, " . gettype($args[0]) . ' given');
         }
+        if (isset($args[$required - 1]) && is_numeric($args[$required - 1])) {
+            $code = $args[$required++ - 1];
+        }
+        $orInteger = $code === null ? " or integer" : '';
+        if (!array_key_exists($required - 1, $args)) {
+            throw new \InvalidArgumentException(get_called_class() . "::$method() expects parameter $required to be callable$orInteger, none given");
+        }
         if (!is_callable($args[$required - 1])) {
-            throw new \InvalidArgumentException(get_called_class() . "::$method() expects parameter $required to be callable, " . gettype($args[$required - 1]) . ' given');
+            throw new \InvalidArgumentException(get_called_class() . "::$method() expects parameter $required to be callable$orInteger, " . gettype($args[$required - 1]) . ' given');
         }
         if (isset($args[$required]) && !is_numeric($args[$required])) {
-            throw new \InvalidArgumentException(get_called_class() . "::$method() expects parameter " . ($required + 1) . ' to be integer, ' . gettype($args[$required]) . ' given');
+            throw new \InvalidArgumentException(get_called_class() . "::$method() expects parameter " . ($required + 1) . " to be integer, " . gettype($args[$required]) . ' given');
         }
     }
 
@@ -101,7 +109,7 @@ class Convert
 
         $class = (string)substr($method, 2);
         $required = $class === '' ? 2 : 1;
-        self::validateArgumentTypes($method, $args, $required);
+        self::validateArgumentTypes($method, $args, $required, $code);
 
         if ($class === '') {
             $class = (string)array_shift($args);
@@ -111,16 +119,16 @@ class Convert
             throw new \DomainException("The class \"$class\" must be an instance of Exception or Throwable");
         }
 
-        return Core::handle($args[0], function ($severity, $message, $file, $line) use ($class, $args) {
+        return Core::handle($args[$code !== null], function ($severity, $message, $file, $line) use ($class, $code) {
             if (!(error_reporting() & $severity)) {
                 return;
             }
             if (strcasecmp($class, 'ErrorException') && strcasecmp($class, '\ErrorException')) {
-                throw Core::rewriteLocation(new $class($message), $file, $line);
+                throw Core::rewriteLocation(new $class($message, $code ?: 0), $file, $line);
             } else {
                 throw new \ErrorException($message, 0, $severity, $file, $line);
             }
-        }, isset($args[1]) ? (int)$args[1] : \E_ALL | \E_STRICT);
+        }, isset($args[1 + ($code !== null)]) ? (int)$args[1 + ($code !== null)] : \E_ALL | \E_STRICT);
     }
 
     /**
