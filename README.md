@@ -1,4 +1,4 @@
-# Exceper [![Build Status](https://travis-ci.org/mpyw/exceper.svg?branch=master)](https://travis-ci.org/mpyw/exceper) [![Coverage Status](https://coveralls.io/repos/github/mpyw/exceper/badge.svg?branch=master)](https://coveralls.io/github/mpyw/exceper?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mpyw/exceper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mpyw/exceper/?branch=master)
+# Exceper [![Build Status](https://travis-ci.com/mpyw/exceper.svg?branch=master)](https://travis-ci.com/mpyw/exceper) [![Coverage Status](https://coveralls.io/repos/github/mpyw/exceper/badge.svg?branch=master)](https://coveralls.io/github/mpyw/exceper?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mpyw/exceper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mpyw/exceper/?branch=master)
 
 Provides temporary error handler automatically using [`set_error_handler()`] and [`restore_error_handler()`].
 
