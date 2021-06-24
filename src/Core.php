@@ -1,10 +1,9 @@
 <?php
 
-namespace mpyw\Exceper;
+namespace Mpyw\Exceper;
 
 /**
  * Class Core
- * @package mpyw\Exceper
  */
 class Core
 {
@@ -17,17 +16,17 @@ class Core
      */
     public static function handle($callback, $handler, $types = null)
     {
-        set_error_handler($handler, $types === null ? \E_ALL | \E_STRICT : $types);
+        \set_error_handler($handler, $types === null ? \E_ALL | \E_STRICT : $types);
 
         try {
-            $result = call_user_func($callback);
-            restore_error_handler();
+            $result = \call_user_func($callback);
+            \restore_error_handler();
             return $result;
         } catch (\Exception $e) {
         } catch (\Throwable $e) {
         }
 
-        restore_error_handler();
+        \restore_error_handler();
         throw $e;
     }
 
