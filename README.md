@@ -20,7 +20,7 @@ composer require mpyw/exceper
 
 require __DIR__ . '/vendor/autoload.php';
 
-use mpyw\Exceper\Convert;
+use Mpyw\Exceper\Convert;
 
 try {
 
@@ -44,7 +44,7 @@ try {
 
 ## API
 
-### mpyw\Exceper\Convert::to()<br>mpyw\Exceper\Convert::to`{$class}`()
+### Mpyw\Exceper\Convert::to()<br>Mpyw\Exceper\Convert::to`{$class}`()
 
 Capture errors to convert into an instance of the specified class.  
 
@@ -52,10 +52,10 @@ Capture errors to convert into an instance of the specified class.
 - **`->getFile()` and `->getLine()` returns correct locations** like `ErrorException` does.
 
 ```php
-static mpyw\Exceper\Convert::to(string $class, callable $callback, int $types = E_ALL | E_STRICT): mixed
-static mpyw\Exceper\Convert::to{$class}(callable $callback, int $types = E_ALL | E_STRICT): mixed
-static mpyw\Exceper\Convert::to(string $class, int $code, callable $callback, int $types = E_ALL | E_STRICT): mixed
-static mpyw\Exceper\Convert::to{$class}(int $code, callable $callback, int $types = E_ALL | E_STRICT): mixed
+static Mpyw\Exceper\Convert::to(string $class, callable $callback, int $types = E_ALL | E_STRICT): mixed
+static Mpyw\Exceper\Convert::to{$class}(callable $callback, int $types = E_ALL | E_STRICT): mixed
+static Mpyw\Exceper\Convert::to(string $class, int $code, callable $callback, int $types = E_ALL | E_STRICT): mixed
+static Mpyw\Exceper\Convert::to{$class}(int $code, callable $callback, int $types = E_ALL | E_STRICT): mixed
 ```
 
 #### Arguments
@@ -73,12 +73,12 @@ static mpyw\Exceper\Convert::to{$class}(int $code, callable $callback, int $type
 
 Converted errors.
 
-### mpyw\Exceper\Convert::silent()
+### Mpyw\Exceper\Convert::silent()
 
 Capture errors but never throw anything.
 
 ```php
-static mpyw\Exceper\Convert::silent(callable $callback, int $types = E_ALL | E_STRICT, bool $captureExceptions = true): mixed
+static Mpyw\Exceper\Convert::silent(callable $callback, int $types = E_ALL | E_STRICT, bool $captureExceptions = true): mixed
 ```
 
 #### Arguments
