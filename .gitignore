@@ -1,4 +1,4 @@
-composer.phar
 composer.lock
 /vendor/
-tests/_output/*
+.phpunit.result.cache
+.php_cs.cache

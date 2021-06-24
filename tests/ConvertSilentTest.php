@@ -1,8 +1,10 @@
 <?php
 
-use mpyw\Exceper\Convert;
+namespace Mpyw\Exceper\Tests;
 
-class ConvertSilentTest extends \Codeception\TestCase\Test
+use Mpyw\Exceper\Convert;
+
+class ConvertSilentTest extends TestCase
 {
     public function testFlowWithException()
     {
@@ -16,25 +18,19 @@ class ConvertSilentTest extends \Codeception\TestCase\Test
             ++$count;
         }));
         $this->assertEquals(1, $count);
-        try {
-            fopen();
-        } catch (\PHPUnit_Framework_Exception $x) {
-        }
-        $this->assertTrue(isset($x));
-        $this->assertEquals('fopen() expects at least 2 parameters, 0 given', $x->getMessage());
 
-        $this->assertNull(Convert::silent(function () use (&$count) {
-            ++$count;
-            throw new \InvalidArgumentException('yo');
-            ++$count;
-            throw new \InvalidArgumentException('yeah');
-            ++$count;
-        }));
-        $this->assertEquals(2, $count);
+        $this->shouldTriggerFopenWarning();
+        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
+        fopen();
     }
 
     public function testFlowWithExceptionWithNonCaptureMode()
     {
+        if (\version_compare(PHP_VERSION, '8', '>=')) {
+            $this->shouldTriggerFopenWarning();
+            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
+        }
+
         $count = 0;
 
         $this->assertNull(Convert::silent(function () use (&$count) {
@@ -50,9 +46,6 @@ class ConvertSilentTest extends \Codeception\TestCase\Test
             $this->assertNull(Convert::silent(function () use (&$count) {
                 ++$count;
                 throw new \InvalidArgumentException('yo');
-                ++$count;
-                throw new \InvalidArgumentException('yeah');
-                ++$count;
             }, null, false));
         } catch (\InvalidArgumentException $x) {
         }
@@ -71,7 +64,12 @@ class ConvertSilentTest extends \Codeception\TestCase\Test
             fopen();
             ++$count;
         }));
-        $this->assertEquals(2, $count);
+        $this->assertEquals(
+            \version_compare(PHP_VERSION, '8', '>=')
+                ? 1
+                : 2,
+            $count
+        );
     }
 
     /**
@@ -88,29 +86,26 @@ class ConvertSilentTest extends \Codeception\TestCase\Test
             ++$count;
         }));
         $this->assertEquals(1, $count);
-        try {
-            fopen();
-        } catch (\PHPUnit_Framework_Exception $x) {
-        }
-        $this->assertTrue(isset($x));
-        $this->assertEquals('fopen() expects at least 2 parameters, 0 given', $x->getMessage());
+
+        $this->shouldTriggerFopenWarning();
+        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
+        fopen();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage mpyw\Exceper\Convert::silent() expects parameter 1 to be callable, string given
-     */
     public function testInvalidFirstArgumentType()
     {
+        $this->shouldTriggerException('\InvalidArgumentException');
+        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::silent() expects parameter 1 to be callable, string given');
+
         Convert::silent('dummy');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage mpyw\Exceper\Convert::silent() expects parameter 2 to be integer, string given
-     */
     public function testInvalidSecondArgumentType()
     {
-        Convert::silent(function () {}, 'dummy');
+        $this->shouldTriggerException('\InvalidArgumentException');
+        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::silent() expects parameter 2 to be integer, string given');
+
+        Convert::silent(function () {
+        }, 'dummy');
     }
 }

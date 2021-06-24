@@ -1,29 +1,36 @@
 language: php
 
-php:
-  - '7.1'
-  - '7.0'
-  - '5.6'
-  - '5.5'
-  - '5.4'
-
-install:
-  - composer install
-  - vendor/bin/codecept build
-
-sudo: false
+matrix:
+    include:
+        - dist: precise
+          php: 5.3
+        - dist: trusty
+          php: 5.4
+        - dist: trusty
+          php: 5.5
+        - php: 5.6
+        - php: 7.0
+        - php: 7.1
+        - php: 7.2
+        - php: 7.3
+        - php: 7.4
+        - php: 8.0
 
 cache:
   directories:
     - ./vendor
     - $HOME/.composer/cache
 
+before_script:
+  - composer self-update
+  - composer require phpunit/phpunit --dev --no-update
+  - composer require php-coveralls/php-coveralls --dev --no-update
+  - composer update
+  - mkdir -p build/logs
+
 script:
-  - vendor/bin/codecept run unit --coverage --coverage-xml
+  - php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-branches:
-  only:
-    - master
-
-after_script:
+after_success:
+  - '[ ! -f vendor/bin/coveralls ] && ln -s vendor/bin/coveralls vendor/bin/php-coveralls || :'
   - travis_retry php vendor/bin/coveralls
