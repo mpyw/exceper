@@ -10,7 +10,7 @@ Provides temporary error handler automatically using [`set_error_handler()`] and
 ## Installing
 
 ```
-composer require mpyw/exceper:^1.1
+composer require mpyw/exceper
 ```
 
 ## Quick Example
