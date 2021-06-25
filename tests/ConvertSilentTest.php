@@ -10,34 +10,31 @@ class ConvertSilentTest extends TestCase
     {
         $count = 0;
 
-        $this->assertNull(Convert::silent(function () use (&$count) {
+        $that = $this;
+        $this->assertNull(Convert::silent(function () use (&$count, $that) {
             ++$count;
-            fopen();
+            echo $that->string[10];
             ++$count;
-            fopen();
+            echo $that->string[10];
             ++$count;
         }));
         $this->assertEquals(1, $count);
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testFlowWithExceptionWithNonCaptureMode()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         $count = 0;
 
-        $this->assertNull(Convert::silent(function () use (&$count) {
+        $that = $this;
+        $this->assertNull(Convert::silent(function () use (&$count, $that) {
             ++$count;
-            fopen();
+            echo $that->string[10];
             ++$count;
-            fopen();
+            echo $that->string[10];
             ++$count;
         }, null, false));
         $this->assertEquals(1, $count);
@@ -57,19 +54,16 @@ class ConvertSilentTest extends TestCase
     public function testSuppressingErrors()
     {
         $count = 0;
-        $this->assertNull(Convert::silent(function () use (&$count) {
+
+        $that = $this;
+        $this->assertNull(Convert::silent(function () use (&$count, $that) {
             ++$count;
-            @fopen();
+            echo @$that->string[10];
             ++$count;
-            fopen();
+            echo $that->string[10];
             ++$count;
         }));
-        $this->assertEquals(
-            \version_compare(PHP_VERSION, '8', '>=')
-                ? 1
-                : 2,
-            $count
-        );
+        $this->assertEquals(2, $count);
     }
 
     /**
@@ -87,15 +81,15 @@ class ConvertSilentTest extends TestCase
         }));
         $this->assertEquals(1, $count);
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testInvalidFirstArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::silent() expects parameter 1 to be callable, string given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::silent() expects parameter 1 to be callable, string given');
 
         Convert::silent('dummy');
     }
@@ -103,7 +97,7 @@ class ConvertSilentTest extends TestCase
     public function testInvalidSecondArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::silent() expects parameter 2 to be integer, string given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::silent() expects parameter 2 to be integer, string given');
 
         Convert::silent(function () {
         }, 'dummy');

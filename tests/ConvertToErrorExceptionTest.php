@@ -11,21 +11,17 @@ class ConvertToErrorExceptionTest extends TestCase
         Convert::toErrorException(function () {
         });
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testFlowWithException()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::toErrorException(function () use (&$line) {
-                $line = __LINE__; fopen();
+            $that = $this;
+            Convert::toErrorException(function () use (&$line, $that) {
+                $line = __LINE__; echo $that->string[10];
             });
         } catch (\ErrorException $x) {
         }
@@ -33,11 +29,11 @@ class ConvertToErrorExceptionTest extends TestCase
         $this->assertEquals(0, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
-        $this->assertEquals(E_WARNING, $x->getSeverity());
-        $this->assertEquals($this->fopenErrorMessage(), $x->getMessage());
+        $this->assertTrue(\in_array($x->getSeverity(), array(\E_WARNING, \E_NOTICE)));
+        $this->assertEquals($this->uninitializedStringOffsetMessage(), $x->getMessage());
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 }
