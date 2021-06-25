@@ -6,14 +6,18 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
+    public $string = '.';
+
     /**
      * @before
      */
     public function prepare()
     {
         \set_error_handler(function($severity, $message, $file, $line) {
+            // Warning: >=8.0
+            // Notice: <8.0
             throw new Warning($message);
-        });
+        }, \E_WARNING | \E_NOTICE);
     }
 
     /**
@@ -36,20 +40,15 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
-    public function shouldTriggerExceptionWithMessage($message)
+    public function shouldTriggerWarningWithMessage($message)
     {
         if (\method_exists($this, 'expectExceptionMessage')) {
             $this->expectExceptionMessage($message);
         }
     }
 
-    public function shouldTriggerFopenWarning()
+    public function shouldTriggerWarning()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->expectError();
-            return;
-        }
-
         if (\method_exists($this, 'expectException')) {
             $this->expectException('\Mpyw\Exceper\Tests\Warning');
             return;
@@ -60,15 +59,10 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
-    public function shouldTriggerFopenWarningMessage($message)
-    {
-        $this->shouldTriggerExceptionWithMessage($message);
-    }
-
-    public function fopenErrorMessage()
+    public function uninitializedStringOffsetMessage()
     {
         return \version_compare(PHP_VERSION, '8', '>=')
-            ? 'fopen() expects at least 2 arguments, 0 given'
-            : 'fopen() expects at least 2 parameters, 0 given';
+            ? 'Uninitialized string offset 10'
+            : 'Uninitialized string offset: 10';
     }
 }

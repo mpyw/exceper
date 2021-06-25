@@ -13,21 +13,17 @@ class ConvertWithCodeTest extends TestCase
             $that->assertTrue(true);
         });
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testFlowWithException()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::to('\InvalidArgumentException', 114514, function () use (&$line) {
-                $line = __LINE__; fopen();
+            $that = $this;
+            Convert::to('\InvalidArgumentException', 114514, function () use (&$line, $that) {
+                $line = __LINE__; echo $that->string[10];
             });
         } catch (\InvalidArgumentException $x) {
         }
@@ -35,23 +31,19 @@ class ConvertWithCodeTest extends TestCase
         $this->assertEquals(114514, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
-        $this->assertEquals($this->fopenErrorMessage(), $x->getMessage());
+        $this->assertEquals($this->uninitializedStringOffsetMessage(), $x->getMessage());
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testSuppressingErrors()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::to('\InvalidArgumentException', 114514, function () {
-                @fopen();
+            $that = $this;
+            Convert::to('\InvalidArgumentException', 114514, function () use ($that) {
+                echo @$that->string[10];
             });
         } catch (\InvalidArgumentException $x) {
         }
@@ -63,14 +55,10 @@ class ConvertWithCodeTest extends TestCase
      */
     public function testFlowWithError()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::to('\ArithmeticError', 114514, function () use (&$line) {
-                $line = __LINE__; fopen();
+            $that = $this;
+            Convert::to('\ArithmeticError', 114514, function () use (&$line, $that) {
+                $line = __LINE__; echo $that->string[10];
             });
         } catch (\ArithmeticError $x) {
         }
@@ -78,11 +66,11 @@ class ConvertWithCodeTest extends TestCase
         $this->assertEquals(114514, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
-        $this->assertEquals($this->fopenErrorMessage(), $x->getMessage());
+        $this->assertEquals($this->uninitializedStringOffsetMessage(), $x->getMessage());
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testStringableInstanceAsClassName()
@@ -99,7 +87,7 @@ class ConvertWithCodeTest extends TestCase
     public function testMissingOneArgument()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 3 to be callable, none given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 3 to be callable, none given');
 
         Convert::to('dummy', 114514);
     }
@@ -107,7 +95,7 @@ class ConvertWithCodeTest extends TestCase
     public function testInvalidFirstArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 1 to be string, array given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 1 to be string, array given');
 
         Convert::to(array(), 114514, function () {});
     }
@@ -115,7 +103,7 @@ class ConvertWithCodeTest extends TestCase
     public function testInvalidThridArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 3 to be callable, NULL given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 3 to be callable, NULL given');
 
         Convert::to('dummy', 114514, null);
     }
@@ -123,7 +111,7 @@ class ConvertWithCodeTest extends TestCase
     public function testInvalidFourthArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 4 to be integer, string given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 4 to be integer, string given');
 
         Convert::to('dummy', 114514, function () {}, 'dummy');
     }

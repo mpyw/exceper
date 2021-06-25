@@ -13,21 +13,17 @@ class ConvertTest extends TestCase
             $that->assertTrue(true);
         });
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testFlowWithException()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::to('\InvalidArgumentException', function () use (&$line) {
-                $line = __LINE__; fopen();
+            $that = $this;
+            Convert::to('\InvalidArgumentException', function () use (&$line, $that) {
+                $line = __LINE__; echo $that->string[10];
             });
         } catch (\InvalidArgumentException $x) {
         }
@@ -35,23 +31,19 @@ class ConvertTest extends TestCase
         $this->assertEquals(0, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
-        $this->assertEquals($this->fopenErrorMessage(), $x->getMessage());
+        $this->assertEquals($this->uninitializedStringOffsetMessage(), $x->getMessage());
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testSuppressingErrors()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::to('\InvalidArgumentException', function () {
-                @fopen();
+            $that = $this;
+            Convert::to('\InvalidArgumentException', function () use ($that) {
+                echo @$that->string[10];
             });
         } catch (\InvalidArgumentException $x) {
         }
@@ -63,14 +55,10 @@ class ConvertTest extends TestCase
      */
     public function testFlowWithError()
     {
-        if (\version_compare(PHP_VERSION, '8', '>=')) {
-            $this->shouldTriggerFopenWarning();
-            $this->shouldTriggerFopenWarningMessage($this->fopenErrorMessage());
-        }
-
         try {
-            Convert::to('\ArithmeticError', function () use (&$line) {
-                $line = __LINE__; fopen();
+            $that = $this;
+            Convert::to('\ArithmeticError', function () use (&$line, $that) {
+                $line = __LINE__; echo $that->string[10];
             });
         } catch (\ArithmeticError $x) {
         }
@@ -78,17 +66,17 @@ class ConvertTest extends TestCase
         $this->assertEquals(0, $x->getCode());
         $this->assertEquals(__FILE__, $x->getFile());
         $this->assertEquals($line, $x->getLine());
-        $this->assertEquals($this->fopenErrorMessage(), $x->getMessage());
+        $this->assertEquals($this->uninitializedStringOffsetMessage(), $x->getMessage());
 
-        $this->shouldTriggerFopenWarning();
-        $this->shouldTriggerExceptionWithMessage($this->fopenErrorMessage());
-        fopen();
+        $this->shouldTriggerWarning();
+        $this->shouldTriggerWarningWithMessage($this->uninitializedStringOffsetMessage());
+        echo $this->string[10];
     }
 
     public function testInvalidMethodName()
     {
         $this->shouldTriggerException('\BadMethodCallException');
-        $this->shouldTriggerExceptionWithMessage('Call to undefined method Mpyw\Exceper\Convert::dummy()');
+        $this->shouldTriggerWarningWithMessage('Call to undefined method Mpyw\Exceper\Convert::dummy()');
 
         Convert::dummy();
     }
@@ -107,7 +95,7 @@ class ConvertTest extends TestCase
     public function testMissingTwoArguments()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects at least 2 parameters, 0 given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects at least 2 parameters, 0 given');
 
         Convert::to();
     }
@@ -115,7 +103,7 @@ class ConvertTest extends TestCase
     public function testMissingOneArgument()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects at least 2 parameters, 1 given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects at least 2 parameters, 1 given');
 
         Convert::to('dummy');
     }
@@ -123,7 +111,7 @@ class ConvertTest extends TestCase
     public function testInvalidFirstArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 1 to be string, array given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 1 to be string, array given');
 
         Convert::to(array(), function () {});
     }
@@ -131,7 +119,7 @@ class ConvertTest extends TestCase
     public function testInvalidSecondArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 2 to be callable or integer, string given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 2 to be callable or integer, string given');
 
         Convert::to('dummy', 'dummy');
     }
@@ -139,7 +127,7 @@ class ConvertTest extends TestCase
     public function testInvalidThirdArgumentType()
     {
         $this->shouldTriggerException('\InvalidArgumentException');
-        $this->shouldTriggerExceptionWithMessage('Mpyw\Exceper\Convert::to() expects parameter 3 to be integer, string given');
+        $this->shouldTriggerWarningWithMessage('Mpyw\Exceper\Convert::to() expects parameter 3 to be integer, string given');
 
         Convert::to('dummy', function () {}, 'dummy');
     }
