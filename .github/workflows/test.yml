@@ -22,7 +22,8 @@ jobs:
       - run: composer require phpunit/phpunit --dev --no-update
       - run: composer update
       - run: mkdir -p build/logs
-      - run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+      - run: 'vendor/bin/phpunit --migrate-configuration || :'
+      - run: vendor/bin/phpunit --testdox --coverage-clover build/logs/clover.xml
 
       - name: Upload Coverage
         uses: nick-invision/retry@v2
